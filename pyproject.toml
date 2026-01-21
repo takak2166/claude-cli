@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "claude-cli"
+version = "0.1.0"
+description = "A CLI tool powered by Claude Agent SDK"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "claude_cli"}]
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.15"
+claude-agent-sdk = "^0.1"
+
+[tool.poetry.scripts]
+claude-cli = "claude_cli.main:main"
+
+[tool.poetry.group.dev.dependencies]
+pyinstaller = "^6.18.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
