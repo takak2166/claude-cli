@@ -33,13 +33,13 @@ ALL_TOOLS = [
     "WebSearch",
     "TodoWrite",
     "Task",
-    "AskUserQuestion",
     "ExitPlanMode",
     "EnterPlanMode",
     "ListMcpResources",
     "ReadMcpResource",
     "KillShell",
     "TaskOutput",
+    "Skill",
 ]
 
 # Default model
