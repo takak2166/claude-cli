@@ -46,13 +46,19 @@ ALL_TOOLS = [
 DEFAULT_MODEL = "claude-opus-4-5-20251101"
 
 
-async def run_query(prompt: str, cwd: str | None = None, verbose: bool = False) -> None:
+async def run_query(
+    prompt: str,
+    cwd: str | None = None,
+    verbose: bool = False,
+    resume: str | None = None,
+) -> None:
     """Run a query with Claude and stream the response."""
     options = ClaudeAgentOptions(
         model=DEFAULT_MODEL,
         allowed_tools=ALL_TOOLS,
         permission_mode="acceptEdits",
         cwd=cwd or str(Path.cwd()),
+        resume=resume,
     )
 
     try:
@@ -74,8 +80,9 @@ async def run_query(prompt: str, cwd: str | None = None, verbose: bool = False) 
                         print(f"[Result] {preview}\n", flush=True)
             elif isinstance(message, ResultMessage):
                 print()  # Final newline
+                # Always output session_id for conversation continuity
+                print(f"\n[Session: {message.session_id}]")
                 if verbose:
-                    print(f"\n[Session: {message.session_id}]")
                     print(f"[Turns: {message.num_turns}]")
                     print(f"[Duration: {message.duration_ms}ms]")
                     if message.total_cost_usd:
@@ -122,6 +129,13 @@ def main() -> None:
         help="Show verbose output including tool usage and thinking",
     )
     parser.add_argument(
+        "-r",
+        "--resume",
+        type=str,
+        default=None,
+        help="Session ID to resume a previous conversation",
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version="%(prog)s 0.1.0",
@@ -133,7 +147,7 @@ def main() -> None:
         parser.print_help()
         sys.exit(1)
 
-    asyncio.run(run_query(args.prompt, args.cwd, args.verbose))
+    asyncio.run(run_query(args.prompt, args.cwd, args.verbose, args.resume))
 
 
 if __name__ == "__main__":
